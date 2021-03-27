@@ -1,2 +1,2 @@
 # Ecological-Models
-A collection of ecological models modelled as ODEs systems solved in Julia.
+A collection of ecology models modelled as ODEs systems solved in Julia.
