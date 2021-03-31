@@ -3,7 +3,7 @@ using DifferentialEquations, Plots
 function plant_prey_predator(du,u,p,t)
     #x, y, z = u
    # dx, dy, dz = du
-    x, y = u
+    x, y, z = u
 
     du[1] = -p[3]*x     #plant spontaneous death rate
     du[1] += -p[4]*y    #plants eaten by prey
@@ -17,8 +17,13 @@ function plant_prey_predator(du,u,p,t)
         du[2] += p[10]*y    #prey reproduction
         du[2] += p[11]*x*y  #prey feeding growth factor
     end
+    du[2] += -p[16]*y*z
         
-
+    du[3] = -p[13]*z    #predator spontaneous death rate
+    if z >= p[14]
+        du[3] += p[15]*y    #predator reproduction
+        du[3] += p[16]*y*z  #predator feeding growth factor
+    end
 
 
 
@@ -41,13 +46,21 @@ PARAMETERS
 11  Prey feeding efficiency
 12  Prey reproduction threshold
 
+13  Predator spontaneous death rate
+14  Predator reproduction threshold
+15  Predator reproduction speed
+16  Predator feeding efficiency
+
 =#
 
-u0 = [100.,14.]
+u0 = [100.,40., 14.]
 p_plant = [1000., 5., 0.1, 0.1, 1.5, 1.2, 4., 1.8]
 p_prey = [0.2, 0.01, 0.01, 10.]
+p_predator = [0.3, 10., 0.0005, 0.001]
 
-p = vcat(p_plant, p_prey)
+p = vcat(vcat(p_plant, p_prey), p_predator)
+
+#print(p)
 
 tspan = (0.,10.)
 
@@ -56,3 +69,5 @@ prob = ODEProblem(plant_prey_predator,u0,tspan,p)
 @time sol = solve(prob)
 
 plot(sol)
+
+#print(sol)
