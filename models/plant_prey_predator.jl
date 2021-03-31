@@ -68,6 +68,5 @@ prob = ODEProblem(plant_prey_predator,u0,tspan,p)
 
 @time sol = solve(prob)
 
-plot(sol)
-
-#print(sol)
+time_plot = plot(sol)
+xyz_plot = plot(sol, vars = (1,2,3))
