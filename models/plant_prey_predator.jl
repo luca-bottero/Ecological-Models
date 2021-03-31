@@ -70,3 +70,5 @@ prob = ODEProblem(plant_prey_predator,u0,tspan,p)
 
 time_plot = plot(sol)
 xyz_plot = plot(sol, vars = (1,2,3))
+
+plot(time_plot, xyz_plot)
