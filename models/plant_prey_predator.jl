@@ -9,19 +9,19 @@ function plant_prey_predator(du,u,p,t)
     du[1] += -p[4]*y    #plants eaten by prey
     if x >= p[2]        #plant reproduction threshold
         du[1] += p[8]*x*(1 - x/p[1])     #plant reproduction with saturation
-        du[1] += p[5]*(1 + p[6]*cos(2*pi/p[7]*t)^2)   #stagional growth factor
+        du[1] += p[5]*x*(1 + p[6]*cos(2*pi/p[7]*t)^2)   #stagional growth factor
     end
 
     du[2] = -p[9]*y     #prey spontaneous death rate
-    if y >= p[12]
-        du[2] += p[10]*y    #prey reproduction
-        du[2] += p[11]*x*y  #prey feeding growth factor
+    if y >= p[10]
+        du[2] += p[11]/(1 + exp(y))    #prey reproduction
+        du[2] += p[12]*x*y  #prey feeding growth factor
     end
-    du[2] += -p[16]*y*z
+    du[2] += -p[16]*y*z     #prey death due to predation
         
     du[3] = -p[13]*z    #predator spontaneous death rate
     if z >= p[14]
-        du[3] += p[15]*y    #predator reproduction
+        du[3] += p[15]/(1 + exp(z))   #predator reproduction
         du[3] += p[16]*y*z  #predator feeding growth factor
     end
 
@@ -42,9 +42,10 @@ PARAMETERS
 8   Plant reproduction speed
 
 9   Prey spontaneous death rate
-10  Prey reproduction speed
-11  Prey feeding efficiency
-12  Prey reproduction threshold
+10  Prey reproduction threshold
+11  Prey reproduction speed
+12  Prey feeding efficiency
+
 
 13  Predator spontaneous death rate
 14  Predator reproduction threshold
@@ -53,10 +54,11 @@ PARAMETERS
 
 =#
 
-u0 = [100.,40., 14.]
-p_plant = [1000., 5., 0.1, 0.1, 1.5, 1.2, 4., 1.8]
-p_prey = [0.2, 0.01, 0.01, 10.]
-p_predator = [0.3, 10., 0.0005, 0.001]
+u0 = [100.,10., 4.]
+
+p_plant = [10000., 0., 0.1, 0.1, 1.5, 1.2, 10., 3.8]
+p_prey = [0.2, 0., 0., 1e-4]
+p_predator = [0.5, 0., 0.0005, 1e-5]
 
 p = vcat(vcat(p_plant, p_prey), p_predator)
 
